@@ -1,10 +1,16 @@
 server:
-  port: 9000   # API Gateway will run on 9000
+  port: 9000
 
 spring:
   application:
     name: api-gateway
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
   cloud:
     gateway:
       routes:
@@ -12,18 +18,19 @@ spring:
           uri: lb://ORDERS
           predicates:
             - Path=/api/orders/**
-
         - id: inventory-service
           uri: lb://INVENTORY
           predicates:
             - Path=/api/inventory/**
-
         - id: product-service
           uri: lb://PRODUCT
           predicates:
             - Path=/api/products/**
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
