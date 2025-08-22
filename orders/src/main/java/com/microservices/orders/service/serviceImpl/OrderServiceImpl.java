@@ -9,6 +9,8 @@ import com.microservices.orders.dto.Product;
 import com.microservices.orders.entity.Order;
 import com.microservices.orders.repository.OrderRepository;
 import com.microservices.orders.service.OrderService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,6 +30,8 @@ public class OrderServiceImpl implements OrderService {
     private final InventoryClient inventoryClient;
     private final ProductClient productClient;
 
+    @Retry(name = "inventoryRetry",fallbackMethod = "createOrderFallback") // Retry logic for inventory checks
+    @RateLimiter(name = "inventoryRateLimiter", fallbackMethod = "createOrderFallback") // Rate limiting for inventory checks
     @Override
     public Boolean createOrder(OrderRequestDto orderRequestDto) {
         Long productId = orderRequestDto.getProductId();
@@ -58,6 +62,11 @@ public class OrderServiceImpl implements OrderService {
             log.warn("Product with SKU code {} is not in stock", skuCode);
             return false;
         }
+    }
+
+    public Boolean createOrderFallback(OrderRequestDto orderRequestDto,Throwable throwable){
+        log.info("Fallback occured due to : {}", throwable.getMessage());
+        return false; // Fallback logic when inventory check fails
     }
 
     @Override
