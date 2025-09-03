@@ -1,0 +1,11 @@
+Create product -> topic ---> listening --> inventory
+
+Ordering a product -> topic --> listening --> inventory
+                                          --> payment --> listening --> order
+                                            --> shipping --> listening --> order
+                                            --> notification --> listening --> order
+
+
+//auth
+user -> order placed -->
+admin - create products ->

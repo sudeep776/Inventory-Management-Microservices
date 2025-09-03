@@ -1,3 +1,15 @@
+management:
+    health:
+        circuitbreakers:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: *
+    endpoint:
+        health:
+          show-details: always
+
 resilience4j:
     retry:
         instances:
@@ -11,3 +23,15 @@ resilience4j:
                 limitForPeriod: 1
                 limitRefreshPeriod: 5s
                 timeoutDuration: 1s
+
+    circuitbreaker:
+        instances:
+            inventoryCircuitBreaker:
+                registerHealthIndicator: true
+                slidingWindowType: COUNT_BASED
+                slidingWindowSize: 10
+                minimumNumberOfCalls: 10
+                permittedNumberOfCallsInHalfOpenState: 3
+                waitDurationInOpenState: 20s
+                failureRateThreshold: 50
+                eventConsumerBufferSize: 10
