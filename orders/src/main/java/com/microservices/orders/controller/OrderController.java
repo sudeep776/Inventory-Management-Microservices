@@ -5,6 +5,7 @@ import com.microservices.orders.dto.OrderRequestDto;
 import com.microservices.orders.dto.OrderResponseDto;
 import com.microservices.orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,8 @@ public class OrderController {
         return orderService.getOrders();
     }
 
-    @GetMapping("/test")
+    @GetMapping("/testAuth")
+    @PreAuthorize("hasRole('USER')")
     public String testInventoryService() {
         // This method will call the Inventory Service's test endpoint
         return inventoryClient.testInventoryService();

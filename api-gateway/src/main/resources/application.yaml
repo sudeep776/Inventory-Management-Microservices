@@ -23,6 +23,12 @@ spring:
           uri: lb://product
           predicates:
             - Path=/api/products/**
+        - id: auth-service
+          uri: lb://authservice
+          predicates:
+            - Path=/api/auth/**
+  main:
+    web-application-type: reactive
 
 eureka:
   client:
@@ -38,3 +44,7 @@ management:
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
+
+
+
+
