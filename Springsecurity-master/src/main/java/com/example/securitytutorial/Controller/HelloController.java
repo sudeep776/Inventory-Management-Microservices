@@ -16,7 +16,6 @@ public class HelloController {
         return "Hello you are authenticated";
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/helloUser")
     public String getUser(){
         return "Hi User you are authenticated";
